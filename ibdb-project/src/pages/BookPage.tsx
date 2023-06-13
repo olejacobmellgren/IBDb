@@ -81,7 +81,7 @@ const BookPage = () => {
   }, [bookID, userEmail]);
 
   const listNames: string[] = [];
-  console.log(allCustomLists)
+
   for (const elem in allCustomLists) {
     if (!listNames.includes(allCustomLists[elem].listname)) {
       listNames.push(allCustomLists[elem].listname)

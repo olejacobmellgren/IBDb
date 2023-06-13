@@ -79,18 +79,6 @@ function App() {
       localStorage.setItem('ads', JSON.stringify(updatedAds));
     });
 
-    // let allCustomLists: DocumentData[] = [];
-    // const customListsCached = localStorage.getItem("customLists");
-    // if (!customListsCached) {
-    //   firebaseController.getCustomLists().then((orgCustomLists) => {
-    //     allCustomLists = orgCustomLists;
-    //   });
-    //   localStorage.setItem('customLists', JSON.stringify(allCustomLists))
-    // }
-    // const unsubscribeCustomLists = firebaseController.listenForCollectionChanges('customLists', (updatedCustomLists: DocumentData[]) => {
-    //   localStorage.setItem('customLists', JSON.stringify(updatedCustomLists));
-    // });
-
     let allCustomLists: DocumentData[] = [];
     const customListsCached = localStorage.getItem("custombooklists");
     if (!customListsCached) {

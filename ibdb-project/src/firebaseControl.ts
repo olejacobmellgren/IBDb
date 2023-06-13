@@ -148,76 +148,41 @@ class firebaseControl {
       id: id,
     });
     }
-    
-
-    // async addToExistingList(name : string, bookID : string) {
-
-    //   const customListsCached = localStorage.getItem("customLists");
-    //   let allCustomLists: DocumentData[] = [];
-
-    //   if (customListsCached) {
-    //     allCustomLists = JSON.parse(customListsCached);
-    //   }
-    //   const userEmail = localStorage.getItem('user')?.replace(/"/g, '');
-    //   const thisUserLists = allCustomLists.find(
-    //     (list) => list.userID === userEmail
-    //   );
-      
-    //   for (const elem in thisUserLists) {
-    //     if (typeof thisUserLists[elem] !== "string") {
-    //       if(thisUserLists[elem][0] === name) {
-    //         thisUserLists[elem].push(bookID);
-    //       }
-    //     }
-    //   }
-
-    //   console.log(thisUserLists);
-
-    //   const docRef = doc(db, "customLists", userEmail);
-    //   await setDoc(docRef, thisUserLists);
-      
-
-    // }
-    // async addToExistingList(name: string, bookID: string) {
-    //   const customListsCached = localStorage.getItem("customLists");
-    //   let allCustomLists: DocumentData[] = [];
-    
-    //   if (customListsCached) {
-    //     allCustomLists = JSON.parse(customListsCached);
-    //   }
-    
-    //   const userEmail = localStorage.getItem("user")?.replace(/"/g, "");
-    //   const thisUserLists = allCustomLists.find((list) => list.userID === userEmail);
-    
-    //   if (thisUserLists) {
-    //     for (const elem in thisUserLists) {
-    //       if (typeof thisUserLists[elem] !== "string") {
-    //         if (thisUserLists[elem][0] === name) {
-    //           thisUserLists[elem].push(bookID);
-    //         }
-    //       }
-    //     }
-    
-    //   console.log(thisUserLists);
-    //   if (userEmail){
-    //   const listRef = doc(db, "customLists", userEmail);
-    //   // await updateDoc(listRef, {
-        
-    //   // });
-    // }
-    //   }
-    // }
 
     async addBookToList(name: string, bookID: string) {
 
       const userEmail = localStorage.getItem("user")?.replace(/"/g, "");
+      const customListsCached = localStorage.getItem("custombooklists");
+      let allCustomLists: DocumentData[] = [];
     
+      if (customListsCached) {
+        allCustomLists = JSON.parse(customListsCached);
+      }
+
       const id: string = userEmail + name + bookID;
+
+      const listNames: string[] = [];
+      let listId: string = "";
+  
+      for (const elem in allCustomLists) {
+        if (!listNames.includes(allCustomLists[elem].listname)) {
+          listNames.push(allCustomLists[elem].listname)
+        }
+        if (allCustomLists[elem].listname == name) {
+          listId = allCustomLists[elem].listID;
+        }
+      }
+
+      if (!listNames.includes(name)) {
+        listId = (listNames.length + 1).toString();
+      }
+
       try {
         await setDoc(doc(db, "custombooklists", id), {
           bookID: bookID,
           listname: name,
           userEmail: userEmail,
+          listID: listId,
         });
       }
       catch (error) {

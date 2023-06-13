@@ -3,7 +3,7 @@ import { ScrollMenu } from "react-horizontal-scrolling-menu";
 import Card from "./CardForBook";
 import { DocumentData } from "firebase/firestore";
 
-const ScrollingMenu = ({ user, list }: { user: string, list: string }) => {
+const ScrollingMenu = ({ user, listId }: { user: string, listId: string }) => {
 
   const [books, setBooks] = useState<DocumentData[]>([]);
   const [allLists, setAllLists] = useState<DocumentData[]>([]);
@@ -21,7 +21,7 @@ const ScrollingMenu = ({ user, list }: { user: string, list: string }) => {
     }
 
     let allCustomLists: DocumentData[] = [];
-    const customListsCached = localStorage.getItem("custombooklist");
+    const customListsCached = localStorage.getItem("custombooklists");
     if (customListsCached) {
       allCustomLists = JSON.parse(customListsCached);
       setAllLists(allCustomLists);
@@ -30,31 +30,49 @@ const ScrollingMenu = ({ user, list }: { user: string, list: string }) => {
   }, []);
 
 
-  const userList = allLists.find((list) => list.userID.trim() === userEmail);
-  let name: string = '';
-  let mylist: DocumentData[] = [];
+  // const userList = allLists.find((list) => list.userID.trim() === userEmail);
+  // let name: string = '';
+  // let mylist: DocumentData[] = [];
 
-  if (userList) {
-    mylist = userList[list];
-    if (mylist){
-      name = JSON.stringify(mylist[0]).replace(/"/g, '');
+  // if (userList) {
+  //   mylist = userList[list];
+  //   if (mylist){
+  //     name = JSON.stringify(mylist[0]).replace(/"/g, '');
+  //   }
+  // }
+  // let cards: DocumentData[] = [];
+
+  // if (mylist){
+  //   for (const id of mylist) {
+  //     const book = books.find((book) => book.id === id);
+  //     if (book) {
+  //       cards.push(book);
+  //     }
+  //   }
+  // }
+
+  const bookIds: string[] = [];
+  const name: string = allLists.find((list) => list.listID == listId)?.listname;
+  for (const elem in allLists) {
+    if (allLists[elem].listID == listId) {
+      bookIds.push(allLists[elem].bookID);
     }
   }
+
   let cards: DocumentData[] = [];
 
-  if (mylist){
-    for (const id of mylist) {
+  if (bookIds){
+    for (const id of bookIds) {
       const book = books.find((book) => book.id === id);
       if (book) {
         cards.push(book);
       }
     }
   }
-  
 
   return (
     <div>
-    {mylist ? 
+    {bookIds ? 
       <div>
         <div className="conteiner" id="RATI">
           <div className="header">
