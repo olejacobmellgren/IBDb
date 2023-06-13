@@ -3,6 +3,8 @@ import { useState } from 'react';
 import firebaseControl from '../firebaseControl';
 import '../styles/HomePage.css';
 import { useNavigate } from 'react-router-dom';
+import '../styles/AddPage.css';
+
 
 
 const AddBookPage = () => {
@@ -12,7 +14,6 @@ const AddBookPage = () => {
     const [releaseYear, setReleaseYear] = useState<number | undefined >();
     const [description, setDescription] = useState<string>('');
     const [imgURL, setImgURL] = useState<string>('');
-    const [rating, setRating] = useState<number>(0);    
     const [buttonActive, setButtonActive] = useState<boolean>(false);
     const [isAdmin, setIsAdmin] = useState<boolean>(false);
     
@@ -22,7 +23,7 @@ const AddBookPage = () => {
     
     async function addThisBook() {
         if (title.length > 0 && author.length > 0 && genre.length > 0 && description.length > 0 && imgURL.length > 0 && releaseYear !== undefined){
-            await firebaseController.addBook(title, author, genre, releaseYear, description, imgURL, rating);
+            await firebaseController.addBook(title, author, genre, releaseYear, description, imgURL, 0);
             setTitle('');
             setAuthor('');
             setGenre('');
@@ -85,21 +86,21 @@ const AddBookPage = () => {
                 <div>
                     <label className="block mb-2 text-sm font-semibold">Title</label>
                     <input type="text" 
-                        className="block w-full px-4 py-2 text-purple-700 bg-white rounded-full focus:border-teitTheme focus:ring-teitTheme focus:outline-none focus:ring focus:ring-opacity-40 shadow-0"
+                        className="input-field  block w-full px-4 py-2 text-purple-700 bg-white rounded-full focus:border-teitTheme focus:ring-teitTheme focus:outline-none focus:ring focus:ring-opacity-40 shadow-0"
                         placeholder="Title" 
                         value={title} onChange={(event) => {setTitle(event.target.value)}}/>
                 </div>
                 <div>
                     <label className="block mb-2 text-sm font-semibold">Author</label>
                     <input type="text" 
-                        className="block w-full px-4 py-2 text-purple-700 bg-white rounded-full focus:border-teitTheme focus:ring-teitTheme focus:outline-none focus:ring focus:ring-opacity-40 shadow-0"
+                        className="input-field block w-full px-4 py-2 text-purple-700 bg-white rounded-full focus:border-teitTheme focus:ring-teitTheme focus:outline-none focus:ring focus:ring-opacity-40 shadow-0"
                         placeholder="Author" 
                         value={author} onChange={(event) => {setAuthor(event.target.value)}}/>
                 </div>
                 <div>
                     <label className="block mb-2 text-sm font-semibold">Genre</label>
                     <select id ='genre-select' name ='genre' value={genre} onChange={handleGenreChange} 
-                        className="block w-full px-4 py-2 text-purple-700 bg-white rounded-full focus:border-teitTheme focus:ring-teitTheme focus:outline-none focus:ring focus:ring-opacity-40 shadow-0">
+                        className="input-field block w-full px-4 py-2 text-purple-700 bg-white rounded-full focus:border-teitTheme focus:ring-teitTheme focus:outline-none focus:ring focus:ring-opacity-40 shadow-0">
                         {genres.map(el => <option key={el.id} value={el.genre} >{el.genre}</option>)}
                         <option value="" selected disabled hidden>Select Genre</option>
                     </select>
@@ -110,13 +111,13 @@ const AddBookPage = () => {
                     id="releaseYear" 
                     type="number" 
                     placeholder="Release Year" 
-                    className="block w-full px-4 py-2 text-purple-700 bg-white rounded-full focus:border-teitTheme focus:ring-teitTheme focus:outline-none focus:ring focus:ring-opacity-40 shadow-0" 
+                    className="input-field block w-full px-4 py-2 text-purple-700 bg-white rounded-full focus:border-teitTheme focus:ring-teitTheme focus:outline-none focus:ring focus:ring-opacity-40 shadow-0" 
                     value = {releaseYear} onChange={(event) => {setReleaseYear(Number(event.target.value))}}/>
                 </div>
                             <div>
                     <label className="block mb-2 text-sm font-semibold">Description</label>
                     <textarea
-                        className="input-field block w-full px-4 py-2 text-purple-700 bg-white rounded-lg focus:border-teitTheme focus:ring-teitTheme focus:outline-none focus:ring-opacity-40 shadow-0 h-11"
+                        className="input-field input-field block w-full px-4 py-2 text-purple-700 bg-white rounded-lg focus:border-teitTheme focus:ring-teitTheme focus:outline-none focus:ring-opacity-40 shadow-0 h-11"
                         placeholder="Description"
                         value={description}
                         onChange={handleInputChange}/>
@@ -124,22 +125,22 @@ const AddBookPage = () => {
                 <div>
                     <label className="block mb-2 text-sm font-semibold">Image URL</label>
                     <input type="text" 
-                        className="block w-full px-4 py-2 text-purple-700 bg-white rounded-full focus:border-teitTheme focus:ring-teitTheme focus:outline-none focus:ring focus:ring-opacity-40 shadow-0"
+                        className="input-field block w-full px-4 py-2 text-purple-700 bg-white rounded-full focus:border-teitTheme focus:ring-teitTheme focus:outline-none focus:ring focus:ring-opacity-40 shadow-0"
                         placeholder="Image URL" 
                         value={imgURL} onChange={(event) => {setImgURL(event.target.value)}}/>
                 </div>                
                 <div>
                     {buttonActive ? 
                         <div>
-                            <label className="block mb-2 text-sm font-semibold">Ready to add the book!</label>
-                            <button onClick={addThisBook} className="px-6 py-3 rounded-lg bg-hvit shadow-0 hover:shadow-lg">
+                            <label className=" block mb-2 text-sm font-semibold">Ready to add the book!</label>
+                            <button onClick={addThisBook} className="button-enable px-6 py-3 rounded-lg bg-hvit shadow-0 hover:shadow-lg">
                                 Add book
                             </button>
                         </div>
                         : 
                         <div>
                             <label className="block mb-2 text-sm font-semibold">Fill out all fields to add the book to IBDb</label>
-                            <button type="button" disabled className="px-6 py-3 rounded-lg shadow-0 bg-hvit">
+                            <button type="button" disabled className="input-field px-6 py-3 rounded-lg shadow-0 bg-hvit">
                             Add book
                             </button>
                         </div>

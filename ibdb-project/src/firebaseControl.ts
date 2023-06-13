@@ -129,6 +129,7 @@ class firebaseControl {
       //Find the id, equal to the number of books
     const id : string = (await this.findLength()).toString();
       // Add a new document in collection "cities"
+ 
     await setDoc(doc(db, "books", id), {
       title: title, 
       author: author,

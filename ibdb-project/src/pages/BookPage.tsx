@@ -18,7 +18,6 @@ const BookPage = () => {
   const [reviewToDelete, setReviewToDelete] = useState<DocumentData>([]);
   const [book, setBook] = useState<any>();
   const [rating, setRating] = useState<number>(0);
-  const [averageRating, setAverageRating] = useState<number>(0);
   const [amountOfRatingsForBook, setAmountOfRatingsForBook] =
     useState<number>(0);
   const [reviewAdded, setReviewAdded] = useState(false);
@@ -51,25 +50,26 @@ const BookPage = () => {
     let thisBookReviews: DocumentData[] = [];
     const reviewsCached = localStorage.getItem("reviews");
     if (reviewsCached) {
-      allReviews = JSON.parse(reviewsCached);
-      thisBookReviews = allReviews.filter((review) => review.bookID === bookID);
+        allReviews = JSON.parse(reviewsCached);
+        thisBookReviews = allReviews.filter((review) => review.bookID === bookID);
     }
     setReviews(thisBookReviews);
-
-    var sum = 0;
     var counter = 0;
 
-    thisBookReviews.forEach((review) => {
-      sum += review.rating;
-      counter++;
-      if (review.userID === userEmail) {
-        setAlreadyReviewed(true);
-        setUserReview(review);
-      }
-    });
+    thisBookReviews.forEach(review => {
+        counter++;
 
-    setAverageRating(Number((sum / counter).toFixed(1)));
+        if (review.userID === userEmail) {
+            setAlreadyReviewed(true);
+            setUserReview(review);
+        }
+    });
     setAmountOfRatingsForBook(counter);
+
+
+    if (userEmail === "admin@gmail.com"){
+      setIsAdmin(true);
+    }
 
     let allCustomLists: DocumentData[] = [];
     const customListsCached = localStorage.getItem("customLists");
@@ -77,17 +77,7 @@ const BookPage = () => {
       allCustomLists = JSON.parse(customListsCached);
       setAllCustomLists(allCustomLists);
     }
-
-    if (counter === 0) {
-      setAverageRating(0);
-      setAmountOfRatingsForBook(counter);
-    } else {
-      setAverageRating(Number((sum / counter).toFixed(1)));
-      setAmountOfRatingsForBook(counter);
-    }
-    if (userEmail === "admin@gmail.com") {
-      setIsAdmin(true);
-    }
+    
   }, [bookID, userEmail]);
 
   const thisUserLists = allCustomLists.find(
@@ -141,9 +131,11 @@ const BookPage = () => {
 
   const handleRateBook = () => {
     if (!userEmail) {
-      setErrorMessage("You need to be logged in to rate books");
+        setErrorMessage("You need to be logged in to rate books");
+    } else if (book?.releaseYear > 2023) {
+        setErrorMessage("You can't rate a book before it is released")
     } else {
-      setVisibleReviewPopup(true);
+        setVisibleReviewPopup(true);
     }
   };
 
@@ -337,10 +329,10 @@ const BookPage = () => {
           <ul className="rating flex items-center">
             <li className="rating">
               {book && (
-                <StarRating readOnly={true} initialRating={averageRating} />
+                <StarRating readOnly={true} initialRating={book?.rating} />
               )}
             </li>
-            <li className="rating ml-5">{averageRating} / 5</li>
+            <li className="rating ml-5">{book?.rating} / 5</li>
           </ul>
           {amountOfRatingsForBook === 1 ? (
             <div className="amountOfRatings text-sm ml-10 mt-3">
