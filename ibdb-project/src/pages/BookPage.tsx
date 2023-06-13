@@ -72,7 +72,7 @@ const BookPage = () => {
     }
 
     let allCustomLists: DocumentData[] = [];
-    const customListsCached = localStorage.getItem("customLists");
+    const customListsCached = localStorage.getItem("custombooklists");
     if (customListsCached) {
       allCustomLists = JSON.parse(customListsCached);
       setAllCustomLists(allCustomLists);
@@ -80,14 +80,11 @@ const BookPage = () => {
     
   }, [bookID, userEmail]);
 
-  const thisUserLists = allCustomLists.find(
-    (list) => list.userID === userEmail
-  );
   const listNames: string[] = [];
-
-  for (const elem in thisUserLists) {
-    if (typeof thisUserLists[elem] !== "string") {
-      listNames.push(thisUserLists[elem][0]);
+  console.log(allCustomLists)
+  for (const elem in allCustomLists) {
+    if (!listNames.includes(allCustomLists[elem].listname)) {
+      listNames.push(allCustomLists[elem].listname)
     }
   }
 
@@ -175,6 +172,19 @@ const BookPage = () => {
     setRating(0);
   };
 
+  const handleAddBookToList = () => {
+    if (addExistingOrNew == 'existing') {
+      const selectElement = document.getElementById('list-select') as HTMLSelectElement;
+      const selectedValue = selectElement.value;
+      firebaseController.addBookToList(selectedValue, bookID)
+    } else if (addExistingOrNew == 'new') {
+      const inputElement = document.getElementById('list-name') as HTMLInputElement;
+      const inputValue = inputElement.value;
+      firebaseController.addBookToList(inputValue, bookID)
+    }
+    setVisibleAddBookToListPopup(false);
+  }
+
   return (
     <div className="inline-flex">
       <div className="left">
@@ -199,7 +209,7 @@ const BookPage = () => {
                         }
                         onClick={() => setAddExistingOrNew("existing")}
                       >
-                        Add book to list
+                        Add to existing list
                       </button>
                       <div
                         className={
@@ -214,7 +224,7 @@ const BookPage = () => {
                         }
                         onClick={() => setAddExistingOrNew("new")}
                       >
-                        Create new list
+                        Add to new list
                       </button>
                       <div
                         className={
@@ -234,7 +244,7 @@ const BookPage = () => {
                                 <option key={listName} value={listName}>{listName}</option>
                                 ))}
                         </select>
-                        <button onClick={()=> {firebaseController.addToExistingList('books', '3')}} className="list-popup-button shadow-0">
+                        <button className="list-popup-button shadow-0" onClick={()=> handleAddBookToList()}>
                           Add to list
                         </button>
                       </div>
@@ -243,7 +253,7 @@ const BookPage = () => {
                     <div>
                       <input
                         className="input shadow-0"
-                        id="confirmPassword"
+                        id="list-name"
                         placeholder="Name of list"
                         // onKeyDown={handleEnterSignUp}
                         // value={confirmPassword}
@@ -255,8 +265,8 @@ const BookPage = () => {
                         <p className="error">{errorMessage}</p>
                       ) : null}
                       <div >
-                        <button className="list-popup-button shadow-0">
-                          Create list
+                        <button className="list-popup-button shadow-0" onClick={()=> handleAddBookToList()}>
+                          Add to new list
                         </button>
                       </div>
                     </div>

@@ -79,18 +79,30 @@ function App() {
       localStorage.setItem('ads', JSON.stringify(updatedAds));
     });
 
+    // let allCustomLists: DocumentData[] = [];
+    // const customListsCached = localStorage.getItem("customLists");
+    // if (!customListsCached) {
+    //   firebaseController.getCustomLists().then((orgCustomLists) => {
+    //     allCustomLists = orgCustomLists;
+    //   });
+    //   localStorage.setItem('customLists', JSON.stringify(allCustomLists))
+    // }
+    // const unsubscribeCustomLists = firebaseController.listenForCollectionChanges('customLists', (updatedCustomLists: DocumentData[]) => {
+    //   localStorage.setItem('customLists', JSON.stringify(updatedCustomLists));
+    // });
+
     let allCustomLists: DocumentData[] = [];
-    const customListsCached = localStorage.getItem("customLists");
+    const customListsCached = localStorage.getItem("custombooklists");
     if (!customListsCached) {
       firebaseController.getCustomLists().then((orgCustomLists) => {
         allCustomLists = orgCustomLists;
       });
-      localStorage.setItem('customLists', JSON.stringify(allCustomLists))
+      localStorage.setItem('custombooklists', JSON.stringify(allCustomLists))
     }
-    const unsubscribeCustomLists = firebaseController.listenForCollectionChanges('customLists', (updatedCustomLists: DocumentData[]) => {
-      localStorage.setItem('customLists', JSON.stringify(updatedCustomLists));
+    const unsubscribeCustomLists = firebaseController.listenForCollectionChanges('custombooklists', (updatedCustomLists: DocumentData[]) => {
+      localStorage.setItem('custombooklists', JSON.stringify(updatedCustomLists));
     });
-    
+
     return () => {
       unsubscribeBooks();
       unsubscribeReviews();

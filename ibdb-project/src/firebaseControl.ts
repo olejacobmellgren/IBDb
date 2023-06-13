@@ -47,10 +47,17 @@ class firebaseControl {
   };
 
   async getCustomLists() {
-    const customLists = collection(db, 'lists');
+    const customLists = collection(db, 'custombooklists');
     const listSnapshot = await getDocs(customLists);
     const customListsList = listSnapshot.docs.map(doc => doc.data());
     return customListsList;
+  };
+
+  async getCustomListNames() {
+    const customListNames = collection(db, 'customlistnames');
+    const listSnapshot = await getDocs(customListNames);
+    const customListNamesList = listSnapshot.docs.map(doc => doc.data());
+    return customListNamesList;
   };
 
   async getAds() { 
@@ -171,33 +178,50 @@ class firebaseControl {
       
 
     // }
-    async addToExistingList(name: string, bookID: string) {
-      const customListsCached = localStorage.getItem("customLists");
-      let allCustomLists: DocumentData[] = [];
+    // async addToExistingList(name: string, bookID: string) {
+    //   const customListsCached = localStorage.getItem("customLists");
+    //   let allCustomLists: DocumentData[] = [];
     
-      if (customListsCached) {
-        allCustomLists = JSON.parse(customListsCached);
-      }
+    //   if (customListsCached) {
+    //     allCustomLists = JSON.parse(customListsCached);
+    //   }
     
-      const userEmail = localStorage.getItem("user")?.replace(/"/g, "");
-      const thisUserLists = allCustomLists.find((list) => list.userID === userEmail);
+    //   const userEmail = localStorage.getItem("user")?.replace(/"/g, "");
+    //   const thisUserLists = allCustomLists.find((list) => list.userID === userEmail);
     
-      if (thisUserLists) {
-        for (const elem in thisUserLists) {
-          if (typeof thisUserLists[elem] !== "string") {
-            if (thisUserLists[elem][0] === name) {
-              thisUserLists[elem].push(bookID);
-            }
-          }
-        }
+    //   if (thisUserLists) {
+    //     for (const elem in thisUserLists) {
+    //       if (typeof thisUserLists[elem] !== "string") {
+    //         if (thisUserLists[elem][0] === name) {
+    //           thisUserLists[elem].push(bookID);
+    //         }
+    //       }
+    //     }
     
-      console.log(thisUserLists);
-      if (userEmail){
-      const listRef = doc(db, "customLists", userEmail);
-      // await updateDoc(listRef, {
+    //   console.log(thisUserLists);
+    //   if (userEmail){
+    //   const listRef = doc(db, "customLists", userEmail);
+    //   // await updateDoc(listRef, {
         
-      // });
-    }
+    //   // });
+    // }
+    //   }
+    // }
+
+    async addBookToList(name: string, bookID: string) {
+
+      const userEmail = localStorage.getItem("user")?.replace(/"/g, "");
+    
+      const id: string = userEmail + name + bookID;
+      try {
+        await setDoc(doc(db, "custombooklists", id), {
+          bookID: bookID,
+          listname: name,
+          userEmail: userEmail,
+        });
+      }
+      catch (error) {
+        console.log(error)
       }
     }
 

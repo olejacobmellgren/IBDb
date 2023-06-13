@@ -21,7 +21,7 @@ const ScrollingMenu = ({ user, list }: { user: string, list: string }) => {
     }
 
     let allCustomLists: DocumentData[] = [];
-    const customListsCached = localStorage.getItem("customLists");
+    const customListsCached = localStorage.getItem("custombooklist");
     if (customListsCached) {
       allCustomLists = JSON.parse(customListsCached);
       setAllLists(allCustomLists);
