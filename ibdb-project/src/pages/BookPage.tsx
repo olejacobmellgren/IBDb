@@ -33,10 +33,8 @@ const BookPage = () => {
   const [allCustomLists, setAllCustomLists] = useState<DocumentData[]>([]);
   const [isAdmin, setIsAdmin] = useState(false);
   const [addExistingOrNew, setAddExistingOrNew] = useState("existing");
-  const [customListSelected, setCustomListSelected] = useState<string>("");
 
   useEffect(() => {
-    const firebaseController = new firebaseControl();
 
     let allBooks: DocumentData[] = [];
     const booksCached = localStorage.getItem("books");
@@ -128,7 +126,7 @@ const BookPage = () => {
 
   const handleRateBook = () => {
     if (!userEmail) {
-        setErrorMessage("You need to be logged in to rate books");
+        setErrorMessage("You need to be logged in to rate books and add books to lists");
     } else if (book?.releaseYear > 2023) {
         setErrorMessage("You can't rate a book before it is released")
     } else {
@@ -173,14 +171,20 @@ const BookPage = () => {
   };
 
   const handleAddBookToList = () => {
-    if (addExistingOrNew == 'existing') {
+    if (addExistingOrNew === 'existing') {
       const selectElement = document.getElementById('list-select') as HTMLSelectElement;
-      const selectedValue = selectElement.value;
-      firebaseController.addBookToList(selectedValue, bookID)
-    } else if (addExistingOrNew == 'new') {
+      const selectedList = selectElement.value;
+      for (const elem in allCustomLists) {
+        if (allCustomLists[elem].listname === selectedList && allCustomLists[elem].bookID === bookID) {
+          setErrorMessage("This book already exists in this list");
+          return;
+        }
+      }
+      firebaseController.addBookToList(selectedList, bookID)
+    } else if (addExistingOrNew === 'new') {
       const inputElement = document.getElementById('list-name') as HTMLInputElement;
-      const inputValue = inputElement.value;
-      firebaseController.addBookToList(inputValue, bookID)
+      const inputedList = inputElement.value;
+      firebaseController.addBookToList(inputedList, bookID)
     }
     setVisibleAddBookToListPopup(false);
   }
