@@ -1,5 +1,4 @@
 import { getFirestore, collection, getDocs, DocumentData, deleteDoc, updateDoc } from 'firebase/firestore';
-import { initializeApp } from 'firebase/app';
 import { doc, setDoc } from "firebase/firestore";
 import firebase from "firebase/compat/app";
 import 'firebase/compat/firestore';
@@ -29,8 +28,6 @@ export { auth, googleProvider };
 
 class firebaseControl {
 
-  constructor() {
-  };
 
   async getBooks() {
     const books = collection(db, 'books');
@@ -168,7 +165,7 @@ class firebaseControl {
         if (!listNames.includes(allCustomLists[elem].listname)) {
           listNames.push(allCustomLists[elem].listname)
         }
-        if (allCustomLists[elem].listname == name) {
+        if (allCustomLists[elem].listname === name) {
           listId = allCustomLists[elem].listID;
         }
       }
@@ -184,6 +181,18 @@ class firebaseControl {
           userEmail: userEmail,
           listID: listId,
         });
+      }
+      catch (error) {
+        console.log(error)
+      }
+    }
+
+    async removeBookFromList(listName: string, bookID: string) {
+
+      const userEmail = localStorage.getItem("user")?.replace(/"/g, "");
+      const id: string = userEmail + listName + bookID;
+      try {
+        await deleteDoc(doc(db, "custombooklists", id));
       }
       catch (error) {
         console.log(error)

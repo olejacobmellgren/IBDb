@@ -207,6 +207,15 @@ margin-bottom: 10px;
     background-color: #292929;
 }
 
+.remove-book-from-list {
+    margin-top: 24px;
+    margin-left: 90px;
+}
+
+.dark .remove-book-from-list {
+    background-color: #292929;
+}
+
 .list-popup-button {
     padding: 3px 6px 3px 6px;
     width: 200px;

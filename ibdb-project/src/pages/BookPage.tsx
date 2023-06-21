@@ -28,6 +28,9 @@ const BookPage = () => {
   const [visibleDeletePopup, setVisibleDeletePopup] = useState(false);
   const [visibleAddBookToListPopup, setVisibleAddBookToListPopup] =
     useState(false);
+  const [removeBookFromList, setRemoveBookFromList] = useState(false);
+  const [visibleRemoveBookFromListPopup, setVisibleRemoveBookFromListPopup] =
+    useState(false);
   const [commentText, setCommentText] = useState("");
   const [errorMessage, setErrorMessage] = useState("");
   const [allCustomLists, setAllCustomLists] = useState<DocumentData[]>([]);
@@ -75,14 +78,27 @@ const BookPage = () => {
       allCustomLists = JSON.parse(customListsCached);
       setAllCustomLists(allCustomLists);
     }
+
+    for (const elem in allCustomLists) {
+      if (allCustomLists[elem].bookID === bookID && allCustomLists[elem].userEmail === userEmail) {
+        setRemoveBookFromList(true);
+      }
+    }
     
   }, [bookID, userEmail]);
 
   const listNames: string[] = [];
+  const listNamesThisBook: string[] = [];
 
   for (const elem in allCustomLists) {
-    if (!listNames.includes(allCustomLists[elem].listname)) {
+    if (!listNames.includes(allCustomLists[elem].listname) && allCustomLists[elem].userEmail === userEmail) {
       listNames.push(allCustomLists[elem].listname)
+    }
+  }
+
+  for (const elem in allCustomLists) {
+    if (!listNamesThisBook.includes(allCustomLists[elem].listname) && allCustomLists[elem].userEmail === userEmail && allCustomLists[elem].bookID === bookID) {
+      listNamesThisBook.push(allCustomLists[elem].listname)
     }
   }
 
@@ -154,6 +170,13 @@ const BookPage = () => {
     }
   };
 
+  const closeOrOpenRemoveBookFromList: MouseEventHandler<HTMLDivElement> = (e) => {
+    const isClose = (e.target as HTMLElement).closest("#popup");
+    if (!isClose) {
+      setVisibleRemoveBookFromListPopup(false);
+    }
+  };
+
   const deleteReview = (review: DocumentData) => {
     setVisibleDeletePopup(true);
     setReviewToDelete(review);
@@ -189,6 +212,13 @@ const BookPage = () => {
     setVisibleAddBookToListPopup(false);
   }
 
+  const handleRemoveBookFromList = () => {
+    const selectElement = document.getElementById('list-select-delete') as HTMLInputElement;
+    const selectedList = selectElement.value;
+    firebaseController.removeBookFromList(selectedList, bookID)
+    setVisibleRemoveBookFromListPopup(false);
+  }
+
   return (
     <div className="inline-flex">
       <div className="left">
@@ -197,6 +227,13 @@ const BookPage = () => {
           <div>
             <button onClick={() => {setVisibleAddBookToListPopup(true)}} className="add-book-to-list mt-5 px-6 py-3 rounded-xl bg-hvit shadow-0 hover:shadow-lg">
               Add book to list
+            </button>
+          </div>
+        ) : null}
+        {removeBookFromList ? (
+          <div>
+            <button onClick={() => {setVisibleRemoveBookFromListPopup(true)}} className="remove-book-from-list px-6 py-3 rounded-xl bg-kulTheme shadow-0 hover:shadow-lg">
+              Remove book from list
             </button>
           </div>
         ) : null}
@@ -275,6 +312,22 @@ const BookPage = () => {
                       </div>
                     </div>
                   )}
+                </div>
+              </div>
+            ) : null}
+            {visibleRemoveBookFromListPopup ? (
+              <div className="popupBackground" onClick={closeOrOpenRemoveBookFromList}>
+                <div className="popup-inner" id="popup">
+                  <div>
+                    <select id='list-select-delete' name='list' className="block w-full px-4 py-2 text-purple-700 bg-white rounded-full focus:border-teitTheme focus:ring-teitTheme focus:outline-none focus:ring focus:ring-opacity-40 shadow-0">
+                        {listNamesThisBook.map(listNameDelete => (
+                            <option key={listNameDelete} value={listNameDelete}>{listNameDelete}</option>
+                            ))}
+                    </select>
+                    <button className="list-popup-button shadow-0" onClick={()=> handleRemoveBookFromList()}>
+                      Remove from list
+                    </button>
+                  </div>
                 </div>
               </div>
             ) : null}
