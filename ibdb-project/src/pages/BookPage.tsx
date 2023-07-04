@@ -2,7 +2,7 @@ import React, { MouseEventHandler } from "react";
 import firebaseControl from "../firebaseControl";
 import { useState, useEffect } from "react";
 import { DocumentData } from "firebase/firestore";
-import { useParams } from "react-router-dom";
+import { useNavigate, useParams } from "react-router-dom";
 import { StarRating } from "star-rating-react-ts";
 import "../styles/BookPage.css";
 import { DownOutlined, UpOutlined } from "@ant-design/icons";
@@ -36,6 +36,7 @@ const BookPage = () => {
   const [allCustomLists, setAllCustomLists] = useState<DocumentData[]>([]);
   const [isAdmin, setIsAdmin] = useState(false);
   const [addExistingOrNew, setAddExistingOrNew] = useState("existing");
+  const navigate = useNavigate();
 
   useEffect(() => {
 
@@ -92,15 +93,17 @@ const BookPage = () => {
 
   for (const elem in allCustomLists) {
     if (!listNames.includes(allCustomLists[elem].listname) && allCustomLists[elem].userEmail === userEmail) {
-      listNames.push(allCustomLists[elem].listname)
+      listNames.push(allCustomLists[elem].listname);
     }
   }
 
   for (const elem in allCustomLists) {
     if (!listNamesThisBook.includes(allCustomLists[elem].listname) && allCustomLists[elem].userEmail === userEmail && allCustomLists[elem].bookID === bookID) {
-      listNamesThisBook.push(allCustomLists[elem].listname)
+      listNamesThisBook.push(allCustomLists[elem].listname);
     }
   }
+  
+  console.log(listNamesThisBook);
 
   
   const toggleShowFullText = () => {
@@ -210,6 +213,7 @@ const BookPage = () => {
       firebaseController.addBookToList(inputedList, bookID)
     }
     setVisibleAddBookToListPopup(false);
+    navigate(`/`);
   }
 
   const handleRemoveBookFromList = () => {
@@ -217,6 +221,7 @@ const BookPage = () => {
     const selectedList = selectElement.value;
     firebaseController.removeBookFromList(selectedList, bookID)
     setVisibleRemoveBookFromListPopup(false);
+    navigate(`/`);
   }
 
   return (

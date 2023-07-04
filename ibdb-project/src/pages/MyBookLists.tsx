@@ -17,19 +17,18 @@ const MyBookLists = () => {
         allCustomLists = JSON.parse(customListsCached);
     }
 
-    const listNames: string[] = [];
+    const listIDs: string[] = [];
     for (const elem in allCustomLists) {
-        if (!listNames.includes(allCustomLists[elem].listname) && allCustomLists[elem].userEmail === userEmail) {
-            listNames.push(allCustomLists[elem].listname)
+        if (!listIDs.includes(allCustomLists[elem].listID) && allCustomLists[elem].userEmail === userEmail) {
+            listIDs.push(allCustomLists[elem].listID)
         }
     }
-    console.log(listNames);
 
     return (
         <div>
-            {listNames.map((listName, i) => (
-                <div key={i} className="custom-list">
-                    <ScrollingMenuCustom user={userEmail || ""} listId={(i+1).toString()} />
+            {listIDs.map((list) => (
+                <div key={list} className="custom-list">
+                    <ScrollingMenuCustom user={userEmail || ""} listId={list} />
                 </div>
             ))}
         </div>
