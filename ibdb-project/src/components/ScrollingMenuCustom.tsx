@@ -34,7 +34,7 @@ const ScrollingMenu = ({ user, listId }: { user: string, listId: string }) => {
   const bookIds: string[] = [];
   const name: string = allLists.find((list) => list.listID === listId)?.listname;
   for (const elem in allLists) {
-    if (allLists[elem].listID === listId && allLists[elem].userEmail === userEmail) {
+    if (allLists[elem].listID === listId) {
       bookIds.push(allLists[elem].bookID);
     }
   }

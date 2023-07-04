@@ -19,10 +19,11 @@ const MyBookLists = () => {
 
     const listNames: string[] = [];
     for (const elem in allCustomLists) {
-        if (!listNames.includes(allCustomLists[elem].listname)) {
+        if (!listNames.includes(allCustomLists[elem].listname) && allCustomLists[elem].userEmail === userEmail) {
             listNames.push(allCustomLists[elem].listname)
         }
     }
+    console.log(listNames);
 
     return (
         <div>
