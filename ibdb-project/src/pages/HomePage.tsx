@@ -1,8 +1,10 @@
 import React from 'react'
 import ScrollingMenu from '../components/ScrollingMenu';
 import '../styles/HomePage.css';
+import ScrollingMenuCustom from '../components/ScrollingMenuCustom';
 
 const HomePage = () => {
+
     return (
         <div id="hpContent">
             <div className="conteiner" id="recentlyReleased">

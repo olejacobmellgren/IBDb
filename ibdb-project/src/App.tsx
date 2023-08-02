@@ -79,10 +79,23 @@ function App() {
       localStorage.setItem('ads', JSON.stringify(updatedAds));
     });
 
+    let allCustomLists: DocumentData[] = [];
+    const customListsCached = localStorage.getItem("custombooklists");
+    if (!customListsCached) {
+      firebaseController.getCustomLists().then((orgCustomLists) => {
+        allCustomLists = orgCustomLists;
+      });
+      localStorage.setItem('custombooklists', JSON.stringify(allCustomLists))
+    }
+    const unsubscribeCustomLists = firebaseController.listenForCollectionChanges('custombooklists', (updatedCustomLists: DocumentData[]) => {
+      localStorage.setItem('custombooklists', JSON.stringify(updatedCustomLists));
+    });
+
     return () => {
       unsubscribeBooks();
       unsubscribeReviews();
       unsubscribeAds();
+      unsubscribeCustomLists();
     }
 
   }, []);

@@ -1,0 +1,25 @@
+
+
+.custom-card .remove-button {
+    position: absolute;
+    background-color: gray;
+    color: white;
+    font-weight: 800;
+    font-size: 24px;
+    padding-left: 8px;
+    padding-right: 8px;
+    top: 16px;
+    margin-left: 170px;
+    border-radius: 10px;
+    opacity: 0;
+    transition: opacity 0.15;
+    pointer-events: none;
+    white-space: nowrap;
+    z-index: 100;
+}
+
+
+.custom-card:hover .remove-button {
+    opacity: 1;
+    cursor: pointer;
+}

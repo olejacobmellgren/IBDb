@@ -1,5 +1,4 @@
 import { getFirestore, collection, getDocs, DocumentData, deleteDoc, updateDoc } from 'firebase/firestore';
-import { initializeApp } from 'firebase/app';
 import { doc, setDoc } from "firebase/firestore";
 import firebase from "firebase/compat/app";
 import 'firebase/compat/firestore';
@@ -29,8 +28,6 @@ export { auth, googleProvider };
 
 class firebaseControl {
 
-  constructor() {
-  };
 
   async getBooks() {
     const books = collection(db, 'books');
@@ -44,6 +41,20 @@ class firebaseControl {
     const reviewSnapshot = await getDocs(reviews);
     const reviewList = reviewSnapshot.docs.map(doc => doc.data());
     return reviewList;
+  };
+
+  async getCustomLists() {
+    const customLists = collection(db, 'custombooklists');
+    const listSnapshot = await getDocs(customLists);
+    const customListsList = listSnapshot.docs.map(doc => doc.data());
+    return customListsList;
+  };
+
+  async getCustomListNames() {
+    const customListNames = collection(db, 'customlistnames');
+    const listSnapshot = await getDocs(customListNames);
+    const customListNamesList = listSnapshot.docs.map(doc => doc.data());
+    return customListNamesList;
   };
 
   async getAds() { 
@@ -135,16 +146,68 @@ class firebaseControl {
     });
     }
 
-    async addAd(advertiser : string, WPURL : string, adimgURL : string, adId : string) 
-      { 
-   
+    async addBookToList(name: string, bookID: string) {
+
+      const userEmail = localStorage.getItem("user")?.replace(/"/g, "");
+      const customListsCached = localStorage.getItem("custombooklists");
+      let allCustomLists: DocumentData[] = [];
+    
+      if (customListsCached) {
+        allCustomLists = JSON.parse(customListsCached);
+      }
+
+      const id: string = userEmail + name + bookID;
+
+      const listNames: string[] = [];
+      let listId: string = "";
+  
+      for (const elem in allCustomLists) {
+        if (!listNames.includes(allCustomLists[elem].listname)) {
+          listNames.push(allCustomLists[elem].listname)
+        }
+        if (allCustomLists[elem].listname === name) {
+          listId = allCustomLists[elem].listID;
+        }
+      }
+
+      if (!listNames.includes(name)) {
+        listId = (listNames.length + 1).toString();
+      }
+
+      try {
+        await setDoc(doc(db, "custombooklists", id), {
+          bookID: bookID,
+          listname: name,
+          userEmail: userEmail,
+          listID: listId,
+        });
+      }
+      catch (error) {
+        console.log(error)
+      }
+    }
+
+    async removeBookFromList(listName: string, bookID: string) {
+
+      const userEmail = localStorage.getItem("user")?.replace(/"/g, "");
+      const id: string = userEmail + listName + bookID;
+      try {
+        await deleteDoc(doc(db, "custombooklists", id));
+      }
+      catch (error) {
+        console.log(error)
+      }
+    }
+
+
+    async addAd(advertiser : string, WPURL : string, adimgURL : string, adId : string) { 
       await updateDoc(doc(db, "ads" , adId), {
         advertiserName: advertiser, 
         websiteURL : WPURL,
         imgURL: adimgURL,
         id: adId,
       });
-      }
+    }
 
 };
 
